@@ -16,13 +16,12 @@ type Prompt struct {
 
 func NewPrompt() *Prompt {
 	p := &Prompt{
-		input:  widget.NewMultiLineEntry(),
+		input:  widget.NewEntry(),
 		button: widget.NewButton("Send", nil),
 	}
 
 	p.input.SetPlaceHolder("Your epic conversation starts here...")
 	p.input.Wrapping = fyne.TextWrapWord
-
 	// Set up button click handler
 	p.button.OnTapped = func() {
 		if p.onSubmit != nil {

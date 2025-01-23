@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"context"
 	"fmt"
+	"hunt/ai"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -16,20 +16,19 @@ type MainWindow struct {
 	Chat         *Chat      // Middle top
 	Prompt       *Prompt    // Middle bottom
 	Think        *Think     // Right sidebar
-	Model        llms.Model
-	Conversation string
+	Conversation *ai.Conversation
 }
 
 func NewMainWindow(app fyne.App, model llms.Model) *MainWindow {
 	w := &MainWindow{
-		Window: app.NewWindow("LLM Scavenger Hunt"),
-		Model:  model,
+		Window:       app.NewWindow("LLM Scavenger Hunt"),
+		Conversation: ai.NewConversation(model),
 	}
 
-	w.Functions = NewFunctions() // Available LLM functions
-	w.Chat = NewChat()           // Chat history display
-	w.Prompt = NewPrompt()       // User input and send button
-	w.Think = NewThink()         // LLM thinking process
+	w.Functions = NewFunctions()       // Available LLM functions
+	w.Chat = NewChat()                 // Chat history display
+	w.Prompt = NewPrompt()             // User input and send button
+	w.Think = NewThink(w.Conversation) // LLM thinking process
 
 	// retrieves text from the prompt window and sends it to handlePrompt
 	w.Prompt.SetOnSubmit(func(text string) {
@@ -66,30 +65,13 @@ func (w *MainWindow) setupUI() {
 }
 
 func (w *MainWindow) handlePrompt(text string) {
-	// Show user message
-	w.Chat.AddMessage("User", text)
-	w.Conversation += fmt.Sprintf("User: %s\n", text)
-	response := ""
 
-	// Get LLM response
-	ctx := context.Background()
-	content := []llms.MessageContent{
-		llms.TextParts(llms.ChatMessageTypeSystem, "You are the start of a new useful bot."),
-		llms.TextParts(llms.ChatMessageTypeHuman, w.Conversation),
-		llms.TextParts(llms.ChatMessageTypeHuman, text),
-	}
-	completion, err := w.Model.GenerateContent(ctx, content, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-		response += string(chunk)
-		return nil
-	}))
+	w.Chat.AddMessage("User", text)
+	response, err := w.Conversation.HandlePrompt(text, w.Think)
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
-
-	// Show LLM response
 	w.Chat.AddMessage("Assistant", response)
-	w.Conversation += fmt.Sprintf("Assistant: %s\n", response)
-	_ = completion
 }
 
 func (w *MainWindow) Show() {

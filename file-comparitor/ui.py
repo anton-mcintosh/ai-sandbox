@@ -23,29 +23,6 @@ class ChatApp:
         self.setup_ui()
 
     def setup_ui(self):
-        # PDF Selection Frame
-        pdf_frame = ttk.LabelFrame(self.root, text="PDF Selection")
-        pdf_frame.pack(padx=10, pady=5, fill="x")
-
-        # PDF 1 Selection
-        self.pdf1_label = ttk.Label(pdf_frame, text="No PDF 1 selected")
-        self.pdf1_label.pack(side="left", padx=5)
-        ttk.Button(pdf_frame, text="Select PDF 1", command=lambda: self.select_pdf(1)).pack(side="left", padx=5)
-
-        # PDF 2 Selection
-        self.pdf2_label = ttk.Label(pdf_frame, text="No PDF 2 selected")
-        self.pdf2_label.pack(side="left", padx=5)
-        ttk.Button(pdf_frame, text="Select PDF 2", command=lambda: self.select_pdf(2)).pack(side="left", padx=5)
-
-        # Context Input
-        context_frame = ttk.LabelFrame(self.root, text="Additional Context (Optional)")
-        context_frame.pack(padx=10, pady=5, fill="x")
-        self.context_input = tk.Text(context_frame, height=3)
-        self.context_input.pack(padx=5, pady=5, fill="x")
-
-        # Compare Button
-        ttk.Button(self.root, text="Compare PDFs", command=self.compare_pdfs).pack(pady=10)
-
 # Create main container
         main_frame = ttk.Frame(self.root, padding="10")
         main_frame.pack(fill=tk.BOTH, expand=True)
@@ -68,7 +45,7 @@ class ChatApp:
 
         # Create file label
         self.file_label = ttk.Label(main_frame, text="No file selected")
-        self.file_label.pack(pady=5)
+        self.file_label.pack(pady=5self.root = root)
 
         # button for requirements pdf
         self.attach_pdf_button = ttk.Button(main_frame, text="Attach Requirements PDF", command=self.attach_pdf)

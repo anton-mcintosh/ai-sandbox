@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
@@ -10,42 +8,42 @@ import (
 
 type Chat struct {
 	Container fyne.CanvasObject
-	textArea  *widget.Entry
-	// Add other fields needed
+	textArea  *widget.RichText
+	scroll    *container.Scroll
 }
 
 func NewChat() *Chat {
 	c := &Chat{
-		textArea: widget.NewMultiLineEntry(),
+		textArea: widget.NewRichText(),
 	}
 	c.textArea.Wrapping = fyne.TextWrapWord
-	c.textArea.MultiLine = true
 
-	// Set minimum size for the text area
-	c.textArea.Resize(fyne.NewSize(800, 600))
-	c.textArea.MinSize()
-
-	// Create scrollable container
-	scroll := container.NewScroll(c.textArea)
-	c.Container = container.NewStack(scroll)
+	c.scroll = container.NewScroll(c.textArea)
+	c.Container = container.NewStack(c.scroll)
 
 	return c
 }
 
-// AddMessage adds a new message synchronously
 func (c *Chat) AddMessage(role, content string) {
-	message := fmt.Sprintf("%s: %s\n\n", role, content)
-	currentText := c.textArea.Text
-	c.textArea.SetText(currentText + message)
+	prefix := widget.NewRichTextWithText(role + ": ")
+	markdown := widget.NewRichTextFromMarkdown(content)
+	newline := widget.NewRichTextWithText("\n\n")
 
-	// Scroll to bottom after new content
-	c.textArea.CursorRow = len(c.textArea.Text)
+	// Combine all segments
+	var allSegments []widget.RichTextSegment
+	allSegments = append(allSegments, prefix.Segments...)
+	allSegments = append(allSegments, markdown.Segments...)
+	allSegments = append(allSegments, newline.Segments...)
+
+	// Add to existing segments
+	c.textArea.Segments = append(c.textArea.Segments, allSegments...)
 	c.textArea.Refresh()
+
+	c.scroll.ScrollToBottom()
 }
 
-// UpdateThinking updates the thinking process in real-time
 func (c *Chat) UpdateThinking(content string) {
-	c.textArea.SetText(c.textArea.Text + content)
-	c.textArea.CursorRow = len(c.textArea.Text)
+	markdown := widget.NewRichTextFromMarkdown(content)
+	c.textArea.Segments = append(c.textArea.Segments, markdown.Segments...)
 	c.textArea.Refresh()
 }

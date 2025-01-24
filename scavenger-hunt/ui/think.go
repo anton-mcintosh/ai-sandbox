@@ -12,26 +12,26 @@ import (
 
 type Think struct {
 	Container fyne.CanvasObject
-	textArea  *widget.Entry
+	textArea  *widget.Label
 	thinker   types.ThinkUpdater
+	scroll    *container.Scroll
 	// Add other fields needed
 }
 
 func NewThink(thinker types.ThinkUpdater) *Think {
 	t := &Think{
-		textArea: widget.NewMultiLineEntry(),
+		textArea: widget.NewLabel(""),
 		thinker:  thinker,
 	}
 	t.textArea.Wrapping = fyne.TextWrapWord
-	t.textArea.MultiLine = true
 
 	t.textArea.MinSize()
-	scroll := container.NewScroll(t.textArea)
-	t.Container = container.NewStack(scroll)
+	t.scroll = container.NewScroll(t.textArea)
+	t.Container = container.NewStack(t.scroll)
 	return t
 }
 func (t *Think) UpdateThinking(content string) {
 	t.textArea.SetText(t.textArea.Text + content)
-	t.textArea.CursorRow = len(t.textArea.Text)
 	t.textArea.Refresh()
+	t.scroll.ScrollToBottom()
 }

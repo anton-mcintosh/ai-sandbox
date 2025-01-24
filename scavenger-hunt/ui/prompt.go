@@ -13,7 +13,7 @@ type Prompt struct {
 	Container fyne.CanvasObject
 	input     *widget.Entry
 	button    *widget.Button
-	onSubmit  func(string) // Callback for when input is submitted
+	onSubmit  func(string) 
 }
 
 func NewPrompt() *Prompt {
@@ -52,7 +52,6 @@ func (p *Prompt) submit() {
 	}
 }
 
-// SetOnSubmit sets the callback for when text is submitted
 func (p *Prompt) SetOnSubmit(callback func(string)) {
 	p.onSubmit = callback
 }

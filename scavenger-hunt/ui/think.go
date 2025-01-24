@@ -10,12 +10,15 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+/* This is really only necessary in reasoning models such as the 
+* DeepSeek-R1.
+*/
+
 type Think struct {
 	Container fyne.CanvasObject
 	textArea  *widget.Label
 	thinker   types.ThinkUpdater
 	scroll    *container.Scroll
-	// Add other fields needed
 }
 
 func NewThink(thinker types.ThinkUpdater) *Think {

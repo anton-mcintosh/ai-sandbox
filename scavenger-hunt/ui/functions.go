@@ -8,19 +8,15 @@ import (
 type Functions struct {
 	Container fyne.CanvasObject
 	functions []string
-	// Add other fields needed
 }
 
 func NewFunctions() *Functions {
 	functions := []string{
-		"Search the web",
-		"Search the web",
-		"Search the web",
-		"Search the web",
-		"Search the web",
+    "Example func 1",
+    "Example func 2",
+    "Example func 3",
 	}
 
-	// Create a list widget for the functions
 	list := widget.NewList(
 		func() int { return len(functions) },
 		func() fyne.CanvasObject { return widget.NewLabel("template") },
